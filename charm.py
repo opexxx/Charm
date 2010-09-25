@@ -124,7 +124,7 @@ http://www.virustotal.com/buscaHash.html
         self.has_output = True
         # jump out to execute the Scanner
         log("Waiting for pdfid.py to Scan %s" % self.file)
-        Scanner = ["/usr/local/bin/python", "/nsm/bin/pdfid.py", "-se", self.file]
+        Scanner = ["/usr/local/bin/python", "~/bin/pdfid.py", "-se", self.file]
         try:
             Scan = subprocess.Popen(Scanner, shell=False, stdout=subprocess.PIPE)
         except Exception, error:
@@ -184,7 +184,7 @@ http://www.virustotal.com/buscaHash.html
         machine = pe.FILE_HEADER.Machine
         # massive dumps of pefile data
         # userdb lookup time
-        signatures = peutils.SignatureDatabase('/nsm/bin/userdb.txt')
+        signatures = peutils.SignatureDatabase('~/bin/userdb.txt')
         matches = signatures.match_all(pe,ep_only = True)
         self.findings.append("PEID Signature Match(es): %s" % matches)
         self.findings.append("Optional Header: %s\n" % hex(pe.OPTIONAL_HEADER.ImageBase))
@@ -422,7 +422,7 @@ class archive:
         hour = now.tm_hour
         minutes = now.tm_min
         seconds = now.tm_sec
-        path = quote("/nsm/var/malware/%d/%02d/%02d" % (year, month, day))
+        path = quote("/var/malware/%d/%02d/%02d" % (year, month, day))
         stamp = "%d.%02d.%02d.%02d.%02d.%02d" % (year, month, day, hour, minutes, seconds)
         if not os.access(path, os.W_OK):
             try:
