@@ -9,6 +9,7 @@ Use at your own risk
 
 History:
   2010/01/11: start
+
 """
 
 import warnings
@@ -31,10 +32,10 @@ import string
 import zipfile
 import tempfile
 import glob
-#import pefile
-#import peutils
+import pefile
+import peutils
 import datetime
-#from chm.chm import CHMFile
+from chm.chm import CHMFile
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEBase import MIMEBase
 from email.MIMEText import MIMEText
@@ -268,7 +269,7 @@ class Demime(Bundle):
             self.summary.append("Sender: %s\n" % sender)
             self.summary.append("Recipient: %s\n" % recipient)
             self.summary.append("Subject: %s\n" % subject)
-            verbose("Demime: Exim message identified, sender: %s, recipient: %s, subject: %s" % (sender, recipient, subject))
+            verbose("Demime: Mime message identified, sender: %s, recipient: %s, subject: %s" % (sender, recipient, subject))
             mimefile.seek(0)
             self.msg = email.message_from_file(mimefile)
         self.counter = 1
@@ -284,14 +285,16 @@ class Demime(Bundle):
             if payload:
                 if not filename:
                     verbose("Demime: %s file, but unable to determine file name." % mimetype)
-                    # fuzzy onion layers - we have a predictable SMTP source, and this is still guesswork
-                    if re.match(r"A message was processed that matched your filter", payload):
+                    # fuzzy onion layers - if you have a predictable SMTP source forwarding messages, 
+                    # replace YOUR MESSAGE HERE with a known string in the source to identify it as such.
+                    # Do the same for the X-Forwarded header
+                    if re.match(r"YOUR MESSAGE HERE", payload):
                         sender = re.search(r">From (\S*) ", payload)
                         if sender:
                             sender = sender.group(1)
                         else:
                             sender = ""
-                        recipient = re.search(r"X-IronPort-RCPT-TO: (\S*)", payload)
+                        recipient = re.search(r"X-Forwarded: (\S*)", payload)
                         if recipient:
                             recipient = recipient.group(1)
                         else:
